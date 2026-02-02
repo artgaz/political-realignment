@@ -1,15 +1,85 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Political Realignment (Interactive)</title>
-  </head>
-  <body style="margin:0;">
-    <iframe
-      src="./political_realignment_3d_interactive_drag.html"
-      style="border:0; width:100vw; height:100vh;"
-      allowfullscreen
-    ></iframe>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Political Realignment — Interactive 3D Map</title>
+
+  <!-- Plotly CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0b0b0b;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    #plot {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="plot"></div>
+
+  <script>
+    const points = [
+      { name: "Classical Liberal", x: 10,  y: -25, z: -40, heat: 0.2 },
+      { name: "Obama 2008 (Liberal Institutionalism)", x: -10, y: 0,  z: 0, heat: 0.2 },
+      { name: "Populist Left", x: -45, y: 15, z: 0, heat: 0.45 },
+      { name: "Progressive Activist Left", x: -65, y: 55, z: 40, heat: 0.85 },
+      { name: "Populist Right (Trump era)", x: 15, y: 10, z: -10, heat: 0.45 },
+      { name: "Corporate Right (pre-2016 GOP)", x: 60, y: 40, z: 70, heat: 0.55 }
+    ];
+
+    const trace = {
+      type: "scatter3d",
+      mode: "markers+text",
+      x: points.map(p => p.x),
+      y: points.map(p => p.y),
+      z: points.map(p => p.z),
+      text: points.map(p => p.name),
+      textposition: "top center",
+      marker: {
+        size: points.map(p => 22 + p.heat * 35),
+        color: points.map(p => p.heat),
+        colorscale: "Viridis",
+        opacity: points.map(p => 0.4 + p.heat * 0.5),
+        colorbar: {
+          title: "Cultural / Ideological Enforcement"
+        },
+        line: { width: 1, color: "#000" }
+      },
+      hovertemplate:
+        "<b>%{text}</b><br>" +
+        "Economics (X): %{x}<br>" +
+        "Authority (Y): %{y}<br>" +
+        "State–Capital Capture (Z): %{z}<extra></extra>"
+    };
+
+    const layout = {
+      title: {
+        text: "Political Realignment: 2008 → Present",
+        x: 0.5
+      },
+      scene: {
+        xaxis: { title: "Economic Structure (Collectivism → Markets)", range: [-100, 100] },
+        yaxis: { title: "Authority / Coercion (Liberty → Centralization)", range: [-100, 100] },
+        zaxis: { title: "State–Capital Capture (Anti-crony → Corporatism)", range: [-60, 90] },
+        aspectmode: "cube"
+      },
+      margin: { l: 0, r: 0, b: 0, t: 60 },
+      paper_bgcolor: "#0b0b0b",
+      font: { color: "#ffffff" }
+    };
+
+    Plotly.newPlot("plot", [trace], layout, { responsive: true });
+  </script>
+</body>
 </html>
